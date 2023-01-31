@@ -1,6 +1,7 @@
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MinimalApiAdvanced;
+using MinimalApiAdvanced.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<IUsersRepository, InMemoryUsersRepository>();
+
+builder.Services.AddScoped<ExampleHandler>();
 
 var app = builder.Build();
 
@@ -102,14 +105,31 @@ app.MapPost("/users", (UserDto dto, IUsersRepository repo) =>
     return Results.Created($"/users/{dto.Id}", dto);
 });
 
+// [AsParameters]
 app.MapGet(
     "/users/{userId}/docs",
-    ([AsParameters] UsersDocumentsSearchRequest request) 
+    ([AsParameters] UsersDocumentsSearchRequest request)
         => Results.Ok(request)
-    );
+);
+
+// Authorization attributes
+app.MapPost(
+    "/nuclearrocket/prepare",
+    [Authorize]() => Results.Ok()
+);
+
+// Authorization with method
+app.MapPost(
+        "/nuclearrocket/destroyEnemy",
+        () => Results.Ok()
+    )
+    .RequireAuthorization();
 
 // Luke, use extension methods!
 app.MapUsersEndpoints();
+
+app.MapPostHandler<ExampleRequest, ExampleHandler>("/example")
+    .WithTags("Handlers");
 
 app.Run();
 
@@ -118,12 +138,12 @@ record UserDto(int Id, string Name);
 // ReSharper disable once ClassNeverInstantiated.Global
 class UsersDocumentsSearchRequest
 {
-    [FromRoute(Name = "userId")]
+    [FromRoute(Name = "userId")] 
     public int UserId { get; set; }
-    
-    [FromQuery]
+
+    [FromQuery] 
     public string? SearchBy { get; set; }
-    
-    [FromHeader(Name = "X-Group-Id")]
+
+    [FromHeader(Name = "X-Group-Id")] 
     public int GroupId { get; set; }
 }
