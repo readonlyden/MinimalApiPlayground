@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinimalApiBasic", "src\Mini
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MinimalApiAdvanced", "src\MinimalApiAdvanced\MinimalApiAdvanced.csproj", "{FAEAF2AD-0EDE-4A4C-9555-B6ABA65E4C8E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotMinimalApi", "src\NotMinimalApi\NotMinimalApi.csproj", "{20757B8C-D4F1-4A57-BFE0-728C74100E75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,9 +28,14 @@ Global
 		{FAEAF2AD-0EDE-4A4C-9555-B6ABA65E4C8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FAEAF2AD-0EDE-4A4C-9555-B6ABA65E4C8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FAEAF2AD-0EDE-4A4C-9555-B6ABA65E4C8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20757B8C-D4F1-4A57-BFE0-728C74100E75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20757B8C-D4F1-4A57-BFE0-728C74100E75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20757B8C-D4F1-4A57-BFE0-728C74100E75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20757B8C-D4F1-4A57-BFE0-728C74100E75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{36D5B659-2DFC-4014-BA19-87F99117EA0A} = {47C2F24F-400F-4EE5-BAE1-7E2C9B5E7CB8}
 		{FAEAF2AD-0EDE-4A4C-9555-B6ABA65E4C8E} = {47C2F24F-400F-4EE5-BAE1-7E2C9B5E7CB8}
+		{20757B8C-D4F1-4A57-BFE0-728C74100E75} = {47C2F24F-400F-4EE5-BAE1-7E2C9B5E7CB8}
 	EndGlobalSection
 EndGlobal
