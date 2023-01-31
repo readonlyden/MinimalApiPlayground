@@ -128,7 +128,9 @@ app.MapPost(
 // Luke, use extension methods!
 app.MapUsersEndpoints();
 
+// Another extension method
 app.MapPostHandler<ExampleRequest, ExampleHandler>("/example")
+    // Some swagger metadata
     .WithTags("Handlers");
 
 app.Run();
