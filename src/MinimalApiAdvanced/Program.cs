@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using MinimalApiAdvanced;
 
@@ -101,9 +102,28 @@ app.MapPost("/users", (UserDto dto, IUsersRepository repo) =>
     return Results.Created($"/users/{dto.Id}", dto);
 });
 
+app.MapGet(
+    "/users/{userId}/docs",
+    ([AsParameters] UsersDocumentsSearchRequest request) 
+        => Results.Ok(request)
+    );
+
 // Luke, use extension methods!
 app.MapUsersEndpoints();
 
 app.Run();
 
 record UserDto(int Id, string Name);
+
+// ReSharper disable once ClassNeverInstantiated.Global
+class UsersDocumentsSearchRequest
+{
+    [FromRoute(Name = "userId")]
+    public int UserId { get; set; }
+    
+    [FromQuery]
+    public string? SearchBy { get; set; }
+    
+    [FromHeader(Name = "X-Group-Id")]
+    public int GroupId { get; set; }
+}
