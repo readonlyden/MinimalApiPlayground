@@ -1,9 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
+using MinimalApiAdvanced;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSingleton<IUsersRepository, InMemoryUsersRepository>();
 
 var app = builder.Build();
 
@@ -51,10 +54,10 @@ app.MapGet("/groups/{id}", ([FromRoute] int id) => new
 });
 
 // Post data
-app.MapPost("/users/create", (UserDto dto) => dto);
+app.MapPost("/users/post", (UserDto dto) => dto);
 
 // Validation and results
-app.MapPatch("/users/update", (UserDto dto) =>
+app.MapPatch("/users/patch", (UserDto dto) =>
 {
     if (string.IsNullOrWhiteSpace(dto.Name))
     {
@@ -71,7 +74,36 @@ app.MapMethods("/methods", new[]
     HttpMethods.Post
 }, () => "Many methods!");
 
-app.Run();
+// Use Services
+app.MapGet("/users", (IUsersRepository repo) =>
+{
+    var users = repo.GetUsers()
+        .Select(user => new UserDto(user.Id, user.Name))
+        .ToList();
 
+    return Results.Ok(users);
+});
+
+// Use Services - Complex example
+app.MapPost("/users", (UserDto dto, IUsersRepository repo) =>
+{
+    if (string.IsNullOrWhiteSpace(dto.Name))
+    {
+        return Results.BadRequest();
+    }
+
+    repo.Add(new User
+    {
+        Id = dto.Id,
+        Name = dto.Name
+    });
+
+    return Results.Created($"/users/{dto.Id}", dto);
+});
+
+// Luke, use extension methods!
+app.MapUsersEndpoints();
+
+app.Run();
 
 record UserDto(int Id, string Name);
