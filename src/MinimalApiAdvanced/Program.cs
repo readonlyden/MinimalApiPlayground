@@ -1,13 +1,16 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MinimalApiAdvanced;
+using MinimalApiAdvanced.Filters;
 using MinimalApiAdvanced.Handlers;
+using MinimalApiAdvanced.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddScoped<IValidator<UserDto>, UserDtoValidator>();
 builder.Services.AddSingleton<IUsersRepository, InMemoryUsersRepository>();
 
 builder.Services.AddScoped<ExampleHandler>();
@@ -91,11 +94,6 @@ app.MapGet("/users", (IUsersRepository repo) =>
 // Use Services - Complex example
 app.MapPost("/users", (UserDto dto, IUsersRepository repo) =>
 {
-    if (string.IsNullOrWhiteSpace(dto.Name))
-    {
-        return Results.BadRequest();
-    }
-
     repo.Add(new User
     {
         Id = dto.Id,
@@ -103,7 +101,8 @@ app.MapPost("/users", (UserDto dto, IUsersRepository repo) =>
     });
 
     return Results.Created($"/users/{dto.Id}", dto);
-});
+})
+    .AddEndpointFilter<ValidationFilter<UserDto>>();
 
 // [AsParameters]
 app.MapGet(
@@ -135,7 +134,7 @@ app.MapPostHandler<ExampleRequest, ExampleHandler>("/example")
 
 app.Run();
 
-record UserDto(int Id, string Name);
+public record UserDto(int Id, string Name);
 
 // ReSharper disable once ClassNeverInstantiated.Global
 class UsersDocumentsSearchRequest
